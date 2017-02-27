@@ -1,0 +1,70 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #efefef;
+  font-size: 16px;
+}
+
+header h1 {
+  font-size: 1.5em;
+  text-align: center;
+}
+
+#message {
+  font-size: 1em;
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+h2 {
+  font-size: 1.25em;
+  font-weight: 700;
+}
+
+.character {
+  display: inline-block;
+  border: 2px solid green;
+  padding: 5px 20px;
+  text-align: center;
+}
+
+.character h2 {
+  font-size: 1em;
+  font-weight: normal;
+  margin-bottom: 10px;
+}
+
+.character p {
+  margin-top: 5px;
+}
+
+#player,
+#enemies,
+#defender {
+  height: 170px;
+}
+
+#player,
+#enemies,
+#fight {
+  display: block;
+  text-align: left;
+}
+
+#player,
+#enemies,
+#fight,
+#defender {
+  margin: 0 0 10px 0;
+}
+
+#player {
+  margin-top: 10px;
+}
+
+button {
+  margin: 15px 0 0;
+  padding: 5px;
+}
