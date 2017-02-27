@@ -340,6 +340,61 @@ var attack = function() {
 
 
 
+// ************* COMPARE ***********************************
+
+
+
+if($('.enemy').length === 0) {
+  // Reset player's attackPower and Health Points
+  if(playerName === " Obi-Wan Kenobi ") {
+    characters["Obi-Wan Kenobi"]["Attack Power"] = 0;
+    characters["Obi-Wan Kenobi"]["Health Points"] = 120;
+  } else if(playerName === " Luke Skywalker ") {
+    characters["Luke Skywalker"]["Attack Power"] = 0;
+    characters["Luke Skywalker"]["Health Points"] = 100;
+  }  else if(playerName === " Darth Sidious ") {
+    characters["Darth Sidious"]["Attack Power"] = 0;
+    characters["Darth Sidious"]["Health Points"] = 150;
+  } else {
+     characters["Darth Maul"]["Attack Power"] = 0;
+     characters["Darth Maul"]["Health Points"] = 180;
+  }
+// The click event for enemy is finished and removed.
+$('.enemy').off();
+  console.log("The elements with the .enemy class = " + $('.enemy').length);
+  p.html('You won!!! GAME OVER');
+  // Create a new <button> element.
+  button = $('<button class="restart">');
+  // Add the content to the <button> element.
+  button.html('Restart');
+  // Append the restart button to the end of the <div> with the ID of defender.
+  $('#defender').append(button);
+
+  // If restart is clicked, the game will reset and start again.
+  $('.restart').on('click', function() {
+    // Remove the elements with the classes your-character, enemy and defender.
+    $('.your-character').remove();
+    $('.enemy').remove();
+    $('.defender').remove();
+    // Execute setUp()
+    setUp();
+    // The click event for restarting the game is finished and removed.
+    $('.restart').off();
+    // Remove the restart <button> element.
+    $('.restart').remove();
+    // Remove the attack message.
+    $('.attack-message').text('');
+
+}); // end .restart click event anonymous function
+} // end if($('.enemy').length === 0)
+
+
+
+
+
+
+// *************************************************
+
 /*
     // If the defender's HP is less than or equal to 0, the character disappears and the player can select a new enemy.
     if(defenderHp <= 0) {
