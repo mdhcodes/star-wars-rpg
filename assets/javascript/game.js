@@ -235,6 +235,112 @@ var attack = function() {
       }); // end .restart click event anonymous function
     } // end if(playerHp <= 0)
 
+
+
+    // If the defender's HP is less than or equal to 0, the character disappears and the player can select a new enemy.
+    if(defenderHp <= 0) {
+      // Hide initial message to the player.
+      $('#message').html('');
+      console.log(defenderName + " HP is " + defenderHp);
+      // When the defender's HP is reduced to zero or below, remove the enemy from the defender area.
+      $('.defender').remove();
+      // Keep track of player's current attackPower
+      if(playerName === " Obi-Wan Kenobi ") {
+        characters["Obi-Wan Kenobi"]["Attack Power"] = playerAp;
+        characters["Obi-Wan Kenobi"]["Health Points"] = playerHp;
+      } else if(playerName === " Luke Skywalker ") {
+        characters["Luke Skywalker"]["Attack Power"] = playerAp;
+        characters["Luke Skywalker"]["Health Points"] = playerHp;
+      }  else if(playerName === " Darth Sidious ") {
+        characters["Darth Sidious"]["Attack Power"] = playerAp;
+        characters["Darth Sidious"]["Health Points"] = playerHp;
+      } else {
+         characters["Darth Maul"]["Attack Power"] = playerAp;
+         characters["Darth Maul"]["Health Points"] = playerHp;
+      }
+      // The click event for attack is finished and removed.
+      $('.attack').off();
+      // Update the attack message.
+      p.html('You\'ve defeated' + defenderName + '. You can choose to fight another enemy.').css('margin-top', '180px');
+      // If the attack button is pressed again, inform player that there is 'No enemy here.'
+      $('.attack').on('click', function() {
+        p.html('No enemy here.');
+      });
+
+
+      // The player can click an .enemy character to select the next opponent.
+      $('.enemy').on('click', function() {
+          // Clear the attack message and move it back to its original position.
+          p.html('').css('margin-top', '0');
+          // Move the clicked .enemy element to the <div> with the ID of defender.
+          $('#defender').append(this);
+          // Add the class 'defender' to the element that was clicked.
+          $(this).addClass('defender');
+          // Change the style of the defender image with css.
+          $(this).css('background-color', '#000').css('color', '#fff');
+          // The click event for enemy is finished and removed.
+          $('.enemy').off();
+          // Execute matchCharacter()
+          matchCharacter();
+      }); // end .enemy click event anonymous function
+    } // end if(defenderHp <= 0)
+
+
+    if($('.enemy').length === 0) {
+
+
+      // Reset player's attackPower and Health Points
+      if(playerName === " Obi-Wan Kenobi ") {
+        characters["Obi-Wan Kenobi"]["Attack Power"] = 0;
+        characters["Obi-Wan Kenobi"]["Health Points"] = 120;
+      } else if(playerName === " Luke Skywalker ") {
+        characters["Luke Skywalker"]["Attack Power"] = 0;
+        characters["Luke Skywalker"]["Health Points"] = 100;
+      }  else if(playerName === " Darth Sidious ") {
+        characters["Darth Sidious"]["Attack Power"] = 0;
+        characters["Darth Sidious"]["Health Points"] = 150;
+      } else {
+         characters["Darth Maul"]["Attack Power"] = 0;
+         characters["Darth Maul"]["Health Points"] = 180;
+      }
+
+
+    // The click event for enemy is finished and removed.
+    $('.enemy').off();
+      console.log("The elements with the .enemy class = " + $('.enemy').length);
+      p.html('You won!!! GAME OVER');
+      // Create a new <button> element.
+      var button = $('<button class="restart">');
+      // Add the content to the <button> element.
+      button.html('Restart');
+      // Append the restart button to the end of the <div> with the ID of defender.
+      $('#defender').append(button);
+
+      // If restart is clicked, the game will reset and start again.
+      $('.restart').on('click', function() {
+        // Remove the elements with the classes your-character, enemy and defender.
+        $('.your-character').remove();
+        $('.enemy').remove();
+        $('.defender').remove();
+
+
+
+
+        // Execute setUp()
+        setUp();
+        // The click event for restarting the game is finished and removed.
+        $('.restart').off();
+        // Remove the restart <button> element.
+        $('.restart').remove();
+        // Remove the attack message.
+        $('.attack-message').text('');
+
+    });
+  } // end if($('.enemy').length === 0)
+
+
+
+/*
     // If the defender's HP is less than or equal to 0, the character disappears and the player can select a new enemy.
     if(defenderHp <= 0) {
       // Hide initial message to the player.
@@ -273,5 +379,6 @@ var attack = function() {
           matchCharacter();
       }); // end .enemy click event anonymous function
     } // end if(defenderHp <= 0)
+    */
   }); // end .attack click event anonymous function
 }; // end attack()
