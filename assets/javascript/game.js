@@ -41,6 +41,8 @@ $(document).ready(function() {
 
 // Set up the game and populate the DOM with the data in the object characters.
 var setUp = function() {
+    // When game restarts, the <div> with the ID of enemies has the initial height of 170px.
+    $('#enemies').css('height', '170px');
   for(character in characters) {
     $('#character-list').append('<div class="character" id="' + characters[character].id + '">' +
       '<h2> ' + characters[character].name + ' </h2>' +
@@ -97,10 +99,8 @@ var enemyCharacter = function() {
 var matchCharacter = function() {
   // Get the player's name
   var playerName = $('.your-character h2').text();
-  console.log("Player: " + playerName);
   //Get the defender's name
   var defenderName = $('.defender h2').text();
-  console.log("Defender: " + defenderName);
     // Match playerName to the object with the same name.
     if (playerName === " Obi-Wan Kenobi ") { // (playerName !== "Obi-Wan Kenobi")
       var playerHp = characters["Obi-Wan Kenobi"]["Health Points"];
@@ -129,6 +129,8 @@ var matchCharacter = function() {
       var defenderHp = characters["Darth Maul"]["Health Points"];
       var defenderCap = characters["Darth Maul"]["Counter Attack Power"];
     }
+    console.log("Player:" + playerName + "| HP: " + playerHp);
+    console.log("Defender:" + defenderName + "| HP: " + defenderHp);
     // Execute attack()
     attack();
 }; // end matchCharacter()
@@ -183,14 +185,14 @@ var attack = function() {
 
     // When the attack button is clicked, the player's HP will decrease by the defender's attackPower.
     playerHp -= defenderCap;
-    console.log("Player Hp: " + playerHp);
+    console.log("Player Hp: " + playerHp + " (reduced by " + defenderCap + ")");
     // Update the health points below the player's image.
     $('.your-character .health-points').text(playerHp);
 
     // When the attack button is clicked, the defender's HP will decrease by the player's attackPower.
     // The player's attackPower will increase by their counter attack value each time the attack button is clicked.
     defenderHp -= (playerAp += playerCap);
-    console.log("Defender Hp: " + defenderHp);
+    console.log("Defender Hp: " + defenderHp + " (reduced by " + playerAp + ")");
     // Update the health points below the defender's image.
     $('.defender .health-points').text(defenderHp);
 
@@ -202,8 +204,9 @@ var attack = function() {
     // Add the content to the <p> element.
     p.html('You attacked ' + defenderName + ' reducing his health by ' + playerAp + ' points. <br>' + defenderName + ' counter attacked you reducing your health by ' + defenderCap + ' points.');
 
-    // If the player's health points are less than or equal to zero, the game ends.
-    if(playerHp <= 0) {
+    // If the player's health points are less than or equal to zero and ...
+    // there are elements with the class enemy available to attack, the game ends.
+    if(playerHp <= 0 && $('.enemy').length !== 0) {
       // Hide initial message to the player.
       $('#message').html('');
       console.log(playerName + " HP is " + playerHp);
@@ -212,7 +215,7 @@ var attack = function() {
       // Update the attack message.
       p.html('You\'ve been defeated . . . GAME OVER!');
       // Create a new <button> element.
-      var button = $('<button class="restart">');
+      var button = $('<button class="restart" id="1">');
       // Add the content to the <button> element.
       button.html('Restart');
       // Append the restart button to the end of the <div> with the ID of defender.
@@ -236,12 +239,16 @@ var attack = function() {
     } // end if(playerHp <= 0)
 
 
-
     // If the defender's HP is less than or equal to 0, the character disappears and the player can select a new enemy.
     if(defenderHp <= 0) {
       // Hide initial message to the player.
       $('#message').html('');
-      console.log(defenderName + " HP is " + defenderHp);
+      // Revert to HP before either HP was zero or below.
+      playerHp += defenderCap;
+      // Update the health points below the player's image.
+      $('.your-character .health-points').text(playerHp);
+      console.log(playerName + "wins. HP is " + playerHp);
+      console.log(defenderName + "loses. HP is " + defenderHp);
       // When the defender's HP is reduced to zero or below, remove the enemy from the defender area.
       $('.defender').remove();
       // Keep track of player's current attackPower
@@ -261,7 +268,7 @@ var attack = function() {
       // The click event for attack is finished and removed.
       $('.attack').off();
       // Update the attack message.
-      p.html('You\'ve defeated' + defenderName + '. You can choose to fight another enemy.').css('margin-top', '180px');
+      p.html('You\'ve defeated' + defenderName + '. You can choose to fight another enemy.');
       // If the attack button is pressed again, inform player that there is 'No enemy here.'
       $('.attack').on('click', function() {
         p.html('No enemy here.');
@@ -270,8 +277,12 @@ var attack = function() {
 
       // The player can click an .enemy character to select the next opponent.
       $('.enemy').on('click', function() {
-          // Clear the attack message and move it back to its original position.
-          p.html('').css('margin-top', '0');
+        // If the <div> with ID of enemies is empty
+        if($('.enemy').length === 1) {
+          $('#enemies').css('height', '20px');
+        }
+          // Clear the attack message.
+          p.html('');
           // Move the clicked .enemy element to the <div> with the ID of defender.
           $('#defender').append(this);
           // Add the class 'defender' to the element that was clicked.
@@ -286,9 +297,9 @@ var attack = function() {
     } // end if(defenderHp <= 0)
 
 
-    if($('.enemy').length === 0) {
-
-
+    // If there are no elements with the class enemy available to attack and ...
+    // the player's HP is greater than 0, the player wins.
+    if($('.enemy').length === 0 && playerHp > 0) {
       // Reset player's attackPower and Health Points
       if(playerName === " Obi-Wan Kenobi ") {
         characters["Obi-Wan Kenobi"]["Attack Power"] = 0;
@@ -304,136 +315,36 @@ var attack = function() {
          characters["Darth Maul"]["Health Points"] = 180;
       }
 
+      // The click event for enemy is finished and removed.
+      $('.enemy').off();
+        console.log("The elements with the .enemy class = " + $('.enemy').length);
+        p.html('You won!!! GAME OVER');
+        // Create a new <button> element.
+        var button = $('<button class="restart" id="2">');
+        // Add the content to the <button> element.
+        button.html('Restart');
+        // Append the restart button to the end of the <div> with the ID of defender.
+        $('#defender').append(button);
 
-    // The click event for enemy is finished and removed.
-    $('.enemy').off();
-      console.log("The elements with the .enemy class = " + $('.enemy').length);
-      p.html('You won!!! GAME OVER');
-      // Create a new <button> element.
-      var button = $('<button class="restart">');
-      // Add the content to the <button> element.
-      button.html('Restart');
-      // Append the restart button to the end of the <div> with the ID of defender.
-      $('#defender').append(button);
+        // Two restart buttons are displayed.
+        // Remove the first restart button.
+        $('#1').remove();
 
-      // If restart is clicked, the game will reset and start again.
-      $('.restart').on('click', function() {
-        // Remove the elements with the classes your-character, enemy and defender.
-        $('.your-character').remove();
-        $('.enemy').remove();
-        $('.defender').remove();
-
-
-
-
-        // Execute setUp()
-        setUp();
-        // The click event for restarting the game is finished and removed.
-        $('.restart').off();
-        // Remove the restart <button> element.
-        $('.restart').remove();
-        // Remove the attack message.
-        $('.attack-message').text('');
-
-    });
-  } // end if($('.enemy').length === 0)
-
-
-
-// ************* COMPARE ***********************************
-
-
-
-if($('.enemy').length === 0) {
-  // Reset player's attackPower and Health Points
-  if(playerName === " Obi-Wan Kenobi ") {
-    characters["Obi-Wan Kenobi"]["Attack Power"] = 0;
-    characters["Obi-Wan Kenobi"]["Health Points"] = 120;
-  } else if(playerName === " Luke Skywalker ") {
-    characters["Luke Skywalker"]["Attack Power"] = 0;
-    characters["Luke Skywalker"]["Health Points"] = 100;
-  }  else if(playerName === " Darth Sidious ") {
-    characters["Darth Sidious"]["Attack Power"] = 0;
-    characters["Darth Sidious"]["Health Points"] = 150;
-  } else {
-     characters["Darth Maul"]["Attack Power"] = 0;
-     characters["Darth Maul"]["Health Points"] = 180;
-  }
-// The click event for enemy is finished and removed.
-$('.enemy').off();
-  console.log("The elements with the .enemy class = " + $('.enemy').length);
-  p.html('You won!!! GAME OVER');
-  // Create a new <button> element.
-  button = $('<button class="restart">');
-  // Add the content to the <button> element.
-  button.html('Restart');
-  // Append the restart button to the end of the <div> with the ID of defender.
-  $('#defender').append(button);
-
-  // If restart is clicked, the game will reset and start again.
-  $('.restart').on('click', function() {
-    // Remove the elements with the classes your-character, enemy and defender.
-    $('.your-character').remove();
-    $('.enemy').remove();
-    $('.defender').remove();
-    // Execute setUp()
-    setUp();
-    // The click event for restarting the game is finished and removed.
-    $('.restart').off();
-    // Remove the restart <button> element.
-    $('.restart').remove();
-    // Remove the attack message.
-    $('.attack-message').text('');
-
-}); // end .restart click event anonymous function
-} // end if($('.enemy').length === 0)
-
-
-
-
-
-
-// *************************************************
-
-/*
-    // If the defender's HP is less than or equal to 0, the character disappears and the player can select a new enemy.
-    if(defenderHp <= 0) {
-      // Hide initial message to the player.
-      $('#message').html('');
-      console.log(defenderName + " HP is " + defenderHp);
-      // When the defender's HP is reduced to zero or below, remove the enemy from the defender area.
-      $('.defender').remove();
-      // Keep track of player's current attackPower
-      //playerApNextGame = playerAp;
-      //console.log(typeof playerApNextGame);
-      // The click event for attack is finished and removed.
-      $('.attack').off();
-      // Update the attack message.
-      p.html('You\'ve defeated' + defenderName + '. You can choose to fight another enemy.').css('margin-top', '180px');
-      // If the attack button is pressed again, inform player that there is 'No enemy here.'
-      $('.attack').on('click', function() {
-        p.html('No enemy here.');
-      });
-
-      // The player can click an .enemy character to select the next opponent.
-      $('.enemy').on('click', function() {
-          // Clear the attack message and move it back to its original position.
-          p.html('').css('margin-top', '0');
-          // Move the clicked .enemy element to the <div> with the ID of defender.
-          $('#defender').append(this);
-          // Add the class 'defender' to the element that was clicked.
-          $(this).addClass('defender');
-          // Change the style of the defender image with css.
-          $(this).css('background-color', '#000').css('color', '#fff');
-          // The click event for enemy is finished and removed.
-          $('.enemy').off();
-
-          //console.log("Before matchCharacter " + playerApNextGame);
-
-          // Execute matchCharacter()
-          matchCharacter();
-      }); // end .enemy click event anonymous function
-    } // end if(defenderHp <= 0)
-    */
-  }); // end .attack click event anonymous function
-}; // end attack()
+        // If restart is clicked, the game will reset and start again.
+        $('.restart').on('click', function() {
+          // Remove the elements with the classes your-character, enemy and defender.
+          $('.your-character').remove();
+          $('.enemy').remove();
+          $('.defender').remove();
+          // Execute setUp()
+          setUp();
+          // The click event for restarting the game is finished and removed.
+          $('.restart').off();
+          // Remove the restart <button> element.
+          $('.restart').remove();
+          // Remove the attack message.
+          $('.attack-message').text('');
+        }); // end .restart click event anonymous function
+      } // end if($('.enemy').length === 0)
+    }); // end .attack click event anonymous function
+  }; // end attack()
