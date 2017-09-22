@@ -68,3 +68,7 @@ button {
   margin: 15px 0 0;
   padding: 5px;
 }
+
+.restart {
+  display: block;
+}
