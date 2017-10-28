@@ -1,350 +1,379 @@
-// Create objects for each character with properties and values
+// Star Wars RPG
 
-var characters = {
-  "Obi-Wan Kenobi": {
-    "name": "Obi-Wan Kenobi",
-    "image": "assets/images/obi_wan_kenobi_128x128",
-    "Health Points": 120,
-    "Attack Power": 0,
-    "Counter Attack Power": 8
-  },
-  "Luke Skywalker": {
-    "name": "Luke Skywalker",
-    "image": "assets/images/luke_skywalker_128x128",
-    "Health Points": 100,
-    "Attack Power": 0,
-    "Counter Attack Power": 5
-  },
-  "Darth Sidious": {
-    "name": "Darth Sidious",
-    "image": "assets/images/darth_sidious_128x128",
-    "Health Points": 150,
-    "Attack Power": 0,
-    "Counter Attack Power": 20
-  },
-  "Darth Maul": {
-    "name": "Darth Maul",
-    "image": "assets/images/darth_maul_128x128",
-    "Health Points": 180,
-    "Attack Power": 0,
-    "Counter Attack Power": 25
-  }
-};
+// Global variables
+var message = '',
+    playerName = '',
+    opponentName = '',
+    playerIndex = '',
+    opponentIndex = '',
+    playerAp = 0,
+    playerHp = 0,
+    opponentCap = 0,
+    opponentHp = 0,
+    originalPlayerAp = 0,
+    selectNewOpponent = false;
 
+// Game Object
+var game = {
 
-$(document).ready(function() {
-  // Display a message to the player explaining how to start the game by clicking an image.
-  $('#message').html('Click an image to select your character and start the game.');
-  setUp();
-}); // end document ready
-
-
-// Set up the game and populate the DOM with the data in the object characters.
-var setUp = function() {
-    // When game restarts, the <div> with the ID of enemies has the initial height of 170px.
-    $('#enemies').css('height', '170px');
-  for(character in characters) {
-    $('#character-list').append('<div class="character" id="' + characters[character].id + '">' +
-      '<h2> ' + characters[character].name + ' </h2>' +
-      '<img src="' + characters[character].image + '" width="128" height="80" alt="' + characters[character].name + '">' +
-      '<p class="health-points">' + characters[character]["Health Points"] + '</p>' +
-      '</div>'
-    );
-    // Execute yourCharacter()
-    yourCharacter();
-  } // end for loop over characters object
-}; // end setUp()
-
-
-// The player selects their character.
-var yourCharacter = function() {
-  // To start the game the player clicks on an image.
-  // The clicked image becomes the player's character.
-  $('.character').on('click', function() {
-    // The player's character image is moved to the <div> with the ID of player under the heading 'Your Character.'
-    $('#player').append(this); // 'this' refers to the <div> / image that was clicked.
-    // Add the class 'your-character' to the element that was clicked.
-    $(this).addClass('your-character');
-    // All the other images / characters become the enemies and are moved to the <div> with the ID of enemies under the heading 'Enemies to Attack.'
-    // Add class 'enemy' to each image in the <div> element with the ID of enemies. Change the style of each image with css.
-    $('#enemies').append($('.character').not(this).addClass('enemy').css('background-color', '#df1a1a'));
-    // The click event for selecting a character is finished and removed.
-    $('.character').off();
-    //Execute enemyCharacter()
-    enemyCharacter();
-  }); // end .character click event anonymous function
-}; // end yourCharacter()
-
-// The player selects their opponent.
-var enemyCharacter = function() {
-  // Display a message to the player explaining how to continue the game.
-  $('#message').html('Click a red image from \'Enemies Available to Attack\' to select your opponent.');
-  // The clicked image becomes the player's opponent.
-  $('.enemy').on('click', function() {
-    // The enemy selected as the opponent is moved to the <div> with the ID of defender under the heading 'Defender.'
-    $('#defender').append(this);
-    // Add the class 'defender' to the element that was clicked.
-    $(this).addClass('defender');
-    // Change the style of the defender image with css.
-    $(this).css('background-color', '#000').css('color', '#fff');
-    // The click event for selecting a character is finished and removed.
-    $('.enemy').off();
-    // Execute matchCharacter()
-    matchCharacter();
-  }); // end .enemy click event anonymous function
-}; // end enemyCharacter()
-
-
-// Match the selected player and defender with the characters in the object characters.
-var matchCharacter = function() {
-  // Get the player's name
-  var playerName = $('.your-character h2').text();
-  //Get the defender's name
-  var defenderName = $('.defender h2').text();
-    // Match playerName to the object with the same name.
-    if (playerName === " Obi-Wan Kenobi ") { // (playerName !== "Obi-Wan Kenobi")
-      var playerHp = characters["Obi-Wan Kenobi"]["Health Points"];
-      var playerAp = characters["Obi-Wan Kenobi"]["Attack Power"];
-    } else if(playerName === " Luke Skywalker ") {
-      var playerHp = characters["Luke Skywalker"]["Health Points"];
-      var playerAp = characters["Luke Skywalker"]["Attack Power"];
-    } else if(playerName === " Darth Sidious ") {
-      var playerHp = characters["Darth Sidious"]["Health Points"];
-      var playerAp = characters["Darth Sidious"]["Attack Power"];
-    } else {
-      var playerHp = characters["Darth Maul"]["Health Points"];
-      var playerAp = characters["Darth Maul"]["Attack Power"];
+  characters: [
+    // Create objects for each character with properties and values
+    {
+      "name": "Obi-Wan Kenobi",
+      "image": "assets/images/obi_wan_kenobi_128x128",
+      "Health Points": 120,
+      "Attack Power": 8,
+      "Counter Attack Power": 30
+    },
+    {
+      "name": "Luke Skywalker",
+      "image": "assets/images/luke_skywalker_128x128",
+      "Health Points": 100,
+      "Attack Power": 20,
+      "Counter Attack Power": 5
+    },
+    {
+      "name": "Darth Sidious",
+      "image": "assets/images/darth_sidious_128x128",
+      "Health Points": 150,
+      "Attack Power": 4,
+      "Counter Attack Power": 20
+    },
+    {
+      "name": "Darth Maul",
+      "image": "assets/images/darth_maul_128x128",
+      "Health Points": 180,
+      "Attack Power": 3,
+      "Counter Attack Power": 25
     }
-    // Match playerName to the object with the same name.
-    if (defenderName === " Obi-Wan Kenobi ") {
-      var defenderHp = characters["Obi-Wan Kenobi"]["Health Points"];
-      var defenderCap = characters["Obi-Wan Kenobi"]["Counter Attack Power"];
-    } else if(defenderName === " Luke Skywalker ") {
-      var defenderHp = characters["Luke Skywalker"]["Health Points"];
-      var defenderCap = characters["Luke Skywalker"]["Counter Attack Power"];
-    } else if(defenderName === " Darth Sidious ") {
-      var defenderHp = characters["Darth Sidious"]["Health Points"];
-      var defenderCap = characters["Darth Sidious"]["Counter Attack Power"];
-    } else {
-      var defenderHp = characters["Darth Maul"]["Health Points"];
-      var defenderCap = characters["Darth Maul"]["Counter Attack Power"];
-    }
-    console.log("Player:" + playerName + "| HP: " + playerHp);
-    console.log("Defender:" + defenderName + "| HP: " + defenderHp);
-    // Execute attack()
-    attack();
-}; // end matchCharacter()
+  ],
 
+  // Set up the game and populate the DOM with the data in the game object.
+  setUp: function() {
+    // If the player clicks the restart button, the following elements are removed from the DOM and the variables are reset.
+    $('#message').remove();
+    $('#game-characters').remove();
+    $('#player').remove();
+    $('#enemies').remove();
+    $('#fight').remove();
+    $('#opponent').remove();
+    $('#game-status').remove();
+    playerName = '';
+    opponentName = '';
+    playerIndex = '';
+    opponentIndex = '';
+    playerAp = 0;
+    playerHp = 0;
+    opponentCap = 0;
+    opponentHp = 0;
+    originalPlayerAp = 0;
 
-var attack = function() {
-  // Display a message to the player explaining how to continue the game.
-  $('#message').html('Click the attack button to fight.');
-  // Match playerName with data from the characters object with the same name.
-  var playerName = $('.your-character h2').text();
-  // Match defenderName with data from the characters object with the same name.
-  var defenderName = $('.defender h2').text();
+    // Display a message to the player explaining how to select their character by clicking an image.
+    // Create an <h2> element
+    message = $('<h2>').attr('id', 'message');
+    // Insert the content into the <h2> element.
+    message.text('Click an image to select your character.');
+    // Append the <h2> element to the <main> element.
+    $('main').append(message);
 
-    if (playerName === " Obi-Wan Kenobi ") {
-      var playerHp = characters["Obi-Wan Kenobi"]["Health Points"];
-      var playerAp = characters["Obi-Wan Kenobi"]["Attack Power"];
-      var playerCap = characters["Obi-Wan Kenobi"]["Counter Attack Power"];
-    } else if(playerName === " Luke Skywalker ") {
-      var playerHp = characters["Luke Skywalker"]["Health Points"];
-      var playerAp = characters["Luke Skywalker"]["Attack Power"];
-      var playerCap = characters["Luke Skywalker"]["Counter Attack Power"];
-    } else if(playerName === " Darth Sidious ") {
-      var playerHp = characters["Darth Sidious"]["Health Points"];
-      var playerAp = characters["Darth Sidious"]["Attack Power"];
-      var playerCap = characters["Darth Sidious"]["Counter Attack Power"];
-    } else {
-      var playerHp = characters["Darth Maul"]["Health Points"];
-      var playerAp = characters["Darth Maul"]["Attack Power"];
-      var playerCap = characters["Darth Maul"]["Counter Attack Power"];
-    }
-
-    if (defenderName === " Obi-Wan Kenobi ") {
-      var defenderHp = characters["Obi-Wan Kenobi"]["Health Points"];
-      var defenderCap = characters["Obi-Wan Kenobi"]["Counter Attack Power"];
-    } else if(defenderName === " Luke Skywalker ") {
-      var defenderHp = characters["Luke Skywalker"]["Health Points"];
-      var defenderCap = characters["Luke Skywalker"]["Counter Attack Power"];
-    } else if(defenderName === " Darth Sidious ") {
-      var defenderHp = characters["Darth Sidious"]["Health Points"];
-      var defenderCap = characters["Darth Sidious"]["Counter Attack Power"];
-    } else {
-      var defenderHp = characters["Darth Maul"]["Health Points"];
-      var defenderCap = characters["Darth Maul"]["Counter Attack Power"];
-    }
-
-    // The player can click the attack button to attack the opponent.
-    $('.attack').on('click', function() {
-      // Display an attack message if there is one.
-      if($('.attack-message')) {
-        $('.attack-message').html('');
-      }
-
-    // When the attack button is clicked, the player's HP will decrease by the defender's attackPower.
-    playerHp -= defenderCap;
-    console.log("Player Hp: " + playerHp + " (reduced by " + defenderCap + ")");
-    // Update the health points below the player's image.
-    $('.your-character .health-points').text(playerHp);
-
-    // When the attack button is clicked, the defender's HP will decrease by the player's attackPower.
-    // The player's attackPower will increase by their counter attack value each time the attack button is clicked.
-    defenderHp -= (playerAp += playerCap);
-    console.log("Defender Hp: " + defenderHp + " (reduced by " + playerAp + ")");
-    // Update the health points below the defender's image.
-    $('.defender .health-points').text(defenderHp);
-
-    // Add a message that explains every attack and health point calculation.
-    // Create a new <p> element.
-    var p = $('<p class="attack-message">');
-    // Append the <p> element to the end of the <div> with the ID of defender.
-    $('#defender').append(p);
-    // Add the content to the <p> element.
-    p.html('You attacked ' + defenderName + ' reducing his health by ' + playerAp + ' points. <br>' + defenderName + ' counter attacked you reducing your health by ' + defenderCap + ' points.');
-
-    // If the player's health points are less than or equal to zero and ...
-    // there are elements with the class enemy available to attack, the game ends.
-    if(playerHp <= 0 && $('.enemy').length !== 0) {
-      // Hide initial message to the player.
-      $('#message').html('');
-      console.log(playerName + " HP is " + playerHp);
-      // Attack button click event is turned off.
-      $('.attack').off();
-      // Update the attack message.
-      p.html('You\'ve been defeated . . . GAME OVER!');
-      // Create a new <button> element.
-      var button = $('<button class="restart" id="1">');
-      // Add the content to the <button> element.
-      button.html('Restart');
-      // Append the restart button to the end of the <div> with the ID of defender.
-      $('#defender').append(button);
-
-      // If restart is clicked, the game will reset and start again.
-      $('.restart').on('click', function() {
-        // Remove the elements with the classes your-character, enemy and defender.
-        $('.your-character').remove();
-        $('.enemy').remove();
-        $('.defender').remove();
-        // Execute setUp()
-        setUp();
-        // The click event for restarting the game is finished and removed.
-        $('.restart').off();
-        // Remove the restart <button> element.
-        $('.restart').remove();
-        // Remove the attack message.
-        $('.attack-message').text('');
-      }); // end .restart click event anonymous function
-    } // end if(playerHp <= 0)
-
-
-    // If the defender's HP is less than or equal to 0, the character disappears and the player can select a new enemy.
-    if(defenderHp <= 0) {
-      // Hide initial message to the player.
-      $('#message').html('');
-      // Revert to HP before either HP was zero or below.
-      playerHp += defenderCap;
-      // Update the health points below the player's image.
-      $('.your-character .health-points').text(playerHp);
-      console.log(playerName + "wins. HP is " + playerHp);
-      console.log(defenderName + "loses. HP is " + defenderHp);
-      // When the defender's HP is reduced to zero or below, remove the enemy from the defender area.
-      $('.defender').remove();
-      // Keep track of player's current attackPower
-      if(playerName === " Obi-Wan Kenobi ") {
-        characters["Obi-Wan Kenobi"]["Attack Power"] = playerAp;
-        characters["Obi-Wan Kenobi"]["Health Points"] = playerHp;
-      } else if(playerName === " Luke Skywalker ") {
-        characters["Luke Skywalker"]["Attack Power"] = playerAp;
-        characters["Luke Skywalker"]["Health Points"] = playerHp;
-      }  else if(playerName === " Darth Sidious ") {
-        characters["Darth Sidious"]["Attack Power"] = playerAp;
-        characters["Darth Sidious"]["Health Points"] = playerHp;
-      } else {
-         characters["Darth Maul"]["Attack Power"] = playerAp;
-         characters["Darth Maul"]["Health Points"] = playerHp;
-      }
-      // The click event for attack is finished and removed.
-      $('.attack').off();
-      // Update the attack message.
-      p.html('You\'ve defeated' + defenderName + '. You can choose to fight another enemy.');
-      // If the attack button is pressed again, inform player that there is 'No enemy here.'
-      $('.attack').on('click', function() {
-        p.html('No enemy here.');
+    // Create a <div> to display the game characters.
+    var gameCharactersDiv = $('<div>').attr('id', 'game-characters');
+    // Loop over the game.characters object.
+    for(character in game.characters) {
+      // Create a <div> element with class="character" for each object in the characters array.
+      var characterDiv = $('<div>').attr({
+        'class': 'character',
+        'data-index': character
       });
+      // Create an <h2> element for each character's name.
+      var characterH2 = $('<h2>').html(game.characters[character].name);
+      // Create an <img> element for each character's image with src, width, height, and alt attributes.
+      var characterImg = $('<img>').attr({
+        'src': game.characters[character].image,
+        'width': '128px',
+        'height': '80px',
+        'alt': game.characters[character].name
+      });
+      // Create a <p> element with class="health-points" to display each character's health points.
+      var characterP = $('<p>').addClass('health-points').html(game.characters[character]["Health Points"]);
+      // Append the characterH2, characterImg, and characterP elements to the characterDiv.
+      characterDiv.append(characterH2);
+      characterDiv.append(characterImg);
+      characterDiv.append(characterP);
+      // Append the characterDiv to the gameCharactersDiv.
+      gameCharactersDiv.append(characterDiv);
+      // Append the gameCharactersDiv to the <main> element.
+      $('main').append(gameCharactersDiv);
+    } // end for loop over game.characters object
 
+    // Create a <div> for the player's character.
+    var playerDiv = $('<div>').attr('id', 'player');
+    // Create a heading for this <div>.
+    var playerH2 = $('<h2>').text('Your Character');
+    // Append playerH2 to the playerDiv.
+    playerDiv.append(playerH2);
+    // Append the playerDiv to the <main> element.
+    $('main').append(playerDiv);
 
-      // The player can click an .enemy character to select the next opponent.
-      $('.enemy').on('click', function() {
-        // If the <div> with ID of enemies is empty
-        if($('.enemy').length === 1) {
-          $('#enemies').css('height', '20px');
-        }
-          // Clear the attack message.
-          p.html('');
-          // Move the clicked .enemy element to the <div> with the ID of defender.
-          $('#defender').append(this);
-          // Add the class 'defender' to the element that was clicked.
-          $(this).addClass('defender');
-          // Change the style of the defender image with css.
-          $(this).css('background-color', '#000').css('color', '#fff');
-          // The click event for enemy is finished and removed.
-          $('.enemy').off();
-          // Execute matchCharacter()
-          matchCharacter();
-      }); // end .enemy click event anonymous function
-    } // end if(defenderHp <= 0)
+    // Create a <div> for the player's enemies.
+    var enemiesDiv = $('<div>').attr('id', 'enemies');
+    // Create a heading for this <div>.
+    var enemiesH2 = $('<h2>').text('Enemies Available to Attack');
+    // Append enemiesH2 to the enemiesDiv.
+    enemiesDiv.append(enemiesH2);
+    // Append the enemiesDiv to the <main> element.
+    $('main').append(enemiesDiv);
 
+    // Create a <div> for the fight.
+    var fightDiv = $('<div>').attr('id', 'fight');
+    // Create a heading for this <div>.
+    var fightH2 = $('<h2>').text('Fight Section');
+    // Create a button for the attack / counter attack.
+    var fightBtn = $('<button>').attr('class', 'attack').text('Attack');
+    // Append fightH2 to fightDiv.
+    fightDiv.append(fightH2);
+    // Append the fightBtn to the fightDiv.
+    fightDiv.append(fightBtn);
+    // Append the fightDiv to the <main> element.
+    $('main').append(fightDiv);
 
-    // If there are no elements with the class enemy available to attack and ...
-    // the player's HP is greater than 0, the player wins.
-    if($('.enemy').length === 0 && playerHp > 0) {
-      // Reset player's attackPower and Health Points
-      if(playerName === " Obi-Wan Kenobi ") {
-        characters["Obi-Wan Kenobi"]["Attack Power"] = 0;
-        characters["Obi-Wan Kenobi"]["Health Points"] = 120;
-      } else if(playerName === " Luke Skywalker ") {
-        characters["Luke Skywalker"]["Attack Power"] = 0;
-        characters["Luke Skywalker"]["Health Points"] = 100;
-      }  else if(playerName === " Darth Sidious ") {
-        characters["Darth Sidious"]["Attack Power"] = 0;
-        characters["Darth Sidious"]["Health Points"] = 150;
+    // Create a <div> for the player's opponent.
+    var opponentDiv = $('<div>').attr('id', 'opponent');
+    // Create a heading for this <div>.
+    var opponentH2 = $('<h2>').text('Your Opponent');
+    // Append opponentH2 to the opponentDiv.
+    opponentDiv.append(opponentH2);
+    // Append the opponentDiv to the <main> element.
+    $('main').append(opponentDiv);
+
+    // Create the game status <div> to track and log game data.
+    var gameStatusDiv = $('<div>').attr('id', 'game-status');
+    // Create playerLog <h3> to track and log player attack power.
+    var playerLog = $('<h3>').attr('class', 'player-log');
+    // Create opponentLog <h3> to track and log opponent counter attack power.
+    var opponentLog = $('<h3>').attr('class', 'opponent-log');
+    // Append the playerLog and opponentLog <h3> elements to the gameStatus <div>.
+    gameStatusDiv.append(playerLog);
+    gameStatusDiv.append(opponentLog);
+    // Append the gameStatusDiv to the <main> element.
+    $('main').append(gameStatusDiv);
+
+    // Create the restart button.
+    var restartBtn = $('<button>').text('Restart').addClass('restart');
+    // Append the restart button to the <div> with id="game-status".
+    $('#game-status').append(restartBtn);
+    // Hide restart button
+    $('.restart').css('display', 'none');
+  }, // end game.setUp()
+
+  // The player selects their character.
+  selectYourCharacter: function() {
+    // The player clicks an image to select their character.
+    $(document).on('click', '.character', function() {
+      // The player's character image is moved to the <div> with the id="player" under the heading 'Your Character.'
+      $('#player').append(this); // 'this' refers to the <div> / image that was clicked.
+      // Add the class="your-character" to the element that was clicked.
+      $(this).addClass('your-character');
+      // All the other images / characters become the enemies and are moved to the <div> with id="enemies" under the heading 'Enemies Available to Attack.'
+      // Add class="enemy" to each image in the <div> element with id="enemies". Change the style of each image with css.
+      $('#enemies').append($('.character').not(this).addClass('enemy').css('background-color', '#df1a1a'));
+
+      // Display a message to the player explaining how to continue the game.
+      $('#message').text('Click a red image from \'Enemies Available to Attack\' to select your opponent.');
+
+      // The click event for selecting a character is finished and removed.
+      $(document).off('click', '.character');
+
+      // Store the player's name, data-index, and health points in variables named playerName, playerIndex, and playerHp.
+      playerName = $('.your-character h2').text();
+      playerIndex = $('.your-character').attr('data-index');
+      playerHp = parseInt($('.your-character p.health-points').text());
+      // Set the player's attack power equal to the value given in the game.characters array.
+      playerAp = game.characters[playerIndex]['Attack Power'];
+    }); // end .character click event
+  }, // end game.selectYourCharacter()
+
+  // The player selects their opponent.
+  selectEnemyCharacter: function() {
+    // The clicked image becomes the player's opponent.
+    $(document).on('click', '.enemy', function() {
+      // When new opponent is chosen, selectNewOpponent = false.
+      selectNewOpponent = false;
+      // The enemy selected as the opponent is moved to the <div> with id="opponent" under the heading 'Opponent.'
+      $('#opponent').append(this);
+      // Add class="opponent" to the element that was clicked.
+      $(this).addClass('opponent');
+      // Change the style of the opponent image with css.
+      $(this).css('background-color', '#000').css('color', '#fff');
+
+      // Display a message to the player explaining how to continue the game.
+      message.html('Click the attack button to fight.');
+
+      // The click event for selecting an enemy character is finished and removed.
+      $(document).off('click', '.enemy');
+
+      // Store the opponent's name, data-index, and health points in variables named opponentName, opponentIndex, and opponentHp.
+      opponentName = $('.opponent h2').text();
+      opponentIndex = $('.opponent').attr('data-index');// Store the opponent's health points in a variable named opponentHp.
+      opponentHp = parseInt($('#opponent p.health-points').text());
+      // Set the opponent's counter attack power equal to the value given in the game.characters array.
+      opponentCap = game.characters[opponentIndex]['Counter Attack Power'];
+
+      // Clear the .player-log if there is any text displayed.
+      $('.player-log').html('');
+    }); // end .enemy click event
+  }, // end game.selectEnemyCharacter()
+
+  // The player attacks the opponent and the opponent makes a counter attack.
+  fight: function() {
+    // When the player clicks the attack button, the attack decreases the oppenent's health points and a counter attack decreases the player's health points.
+    // The player attacks the opponent and the opponentHp decreases by the value of the player's attack power.
+    // Ensure no attack if opponentHp <= 0.
+    if($('.opponent').length > 0) {
+      opponentHp -= playerAp;
+    }
+
+    // Display attack data.
+    $('.player-log').html('You attacked ' + opponentName + ' and lowered his health points by ' + playerAp + '.');
+
+    // The player's attack power increases after every attack (attack button click) by the base or original attack power set in the game.characters array.
+    // If base is 6 each attack will increase the Attack Power by 6 (12, 18, 24, 30 and so on)
+    // Player's attack power doesn't increase if opponent's health points are 0 or below.
+    if($('.opponent').length !== 0) { // The playerAp is increased before the element is removed and the attack button will no longer increase playerAp or is deactivated.
+      originalPlayerAp = game.characters[playerIndex]['Attack Power'];
+      playerAp += originalPlayerAp;
+    }
+
+    // Opponent makes a counter attack and playerHp decreases. Ensure no counter attack if opponentHp <= 0.
+    if(opponentHp > 0) {
+      // Opponent counter attacks and the playerHp decreases by the value of the opponent's counter attack power which remains constant throughout the game.
+      playerHp -= opponentCap;
+    }
+
+    // Display counter attack data.
+    $('.opponent-log').html(opponentName + ' counter attacked you and lowered your health points by ' + opponentCap + '.');
+
+    // Update the DOM with the current health points.
+    $('.your-character p.health-points').text(playerHp);
+    $('#opponent p.health-points').text(opponentHp);
+  }, // end game.fight()
+
+  // Determine if the player has won the game.
+  checkStatus: function() {
+    // If playerHp > 0, there is no opponent, and there are no enemies to fight, the player has won the game.
+    if(playerHp > 0 && $('.opponent').length === 0 && $('.enemy').length === 0) {
+      // Display the winning game status.
+      $('.player-log').text('You Won!!!');
+
+      // Clear the text of the following elements.
+      $('#message').html('');
+      $('.opponent-log').html('');
+
+      // The click event for the attack / counter attack is finished and removed.
+      $(document).off('click', '.attack');
+
+      // Execute game.restart()
+      game.restart();
+    } // end if(playerHp > 0 && $('.opponent').length === 0 && $('.enemy').length === 0) statement
+  }, // end game.checkStatus()
+
+  // Play the game.
+  play: function() {
+    // Play the game by clicking the attack button.
+    $(document).on('click', '.attack', function() {
+
+      // Execute game.fight()
+      game.fight();
+
+      // If enemies are available and a new opponent has not been selected before the attack button is clicked, make sure a new opponent is selected before the game resumes.
+      if(selectNewOpponent) {
+        // Display the game status.
+        $('.player-log').html('There is no enemy to fight here. Please select another opponent by clicking a red image from "Enemies to Attack."');
+        $('.opponent-log').html('');
+        // The click event for the attack / counter attack is finished and removed.
+        $(document).off('click', '.attack');
+
+        // Execute the following functions.
+        game.selectEnemyCharacter();
+        game.play();
+
       } else {
-         characters["Darth Maul"]["Attack Power"] = 0;
-         characters["Darth Maul"]["Health Points"] = 180;
+
+      // If the player's health points are equal to 0 or below, the player loses the game.
+      if(playerHp <= 0) {
+
+      // Display the game status.
+      $('.player-log').html('You\'ve been defeated . . . GAME OVER!!!');
+
+      // Clear the text of the following elements.
+      $('#message').html('');
+      $('.opponent-log').html('');
+
+        // The click event for the attack / counter attack is finished and removed.
+        $(document).off('click', '.attack');
+
+        // Execute game.restart
+        game.restart();
+
       }
 
-      // The click event for enemy is finished and removed.
-      $('.enemy').off();
-        console.log("The elements with the .enemy class = " + $('.enemy').length);
-        p.html('You won!!! GAME OVER');
-        // Create a new <button> element.
-        var button = $('<button class="restart" id="2">');
-        // Add the content to the <button> element.
-        button.html('Restart');
-        // Append the restart button to the end of the <div> with the ID of defender.
-        $('#defender').append(button);
+      // If the opponent's health points are equal to 0 or below, the opponent looses and is removed from the game and the player must choose another enemy to fight if one is present.
+      if(opponentHp <= 0 && $('.enemy').length !== 0) {
+        // Clear the text of the following elements.
+        $('#message').html('');
+        $('.opponent-log').html('');
 
-        // Two restart buttons are displayed.
-        // Remove the first restart button.
-        $('#1').remove();
+        // Turn off the 'attack' click event and stop health points from being subtracted.
+        $(document).off('click', '.attack');
 
-        // If restart is clicked, the game will reset and start again.
-        $('.restart').on('click', function() {
-          // Remove the elements with the classes your-character, enemy and defender.
-          $('.your-character').remove();
-          $('.enemy').remove();
-          $('.defender').remove();
-          // Execute setUp()
-          setUp();
-          // The click event for restarting the game is finished and removed.
-          $('.restart').off();
-          // Remove the restart <button> element.
-          $('.restart').remove();
-          // Remove the attack message.
-          $('.attack-message').text('');
-        }); // end .restart click event anonymous function
-      } // end if($('.enemy').length === 0)
-    }); // end .attack click event anonymous function
-  }; // end attack()
+        // Remove the enemy from the opponent <div>.
+        $('.opponent').remove();
+
+        // The player must select a new opponent to fight, selectNewOpponent === true.
+        selectNewOpponent = true;
+
+        // Display the game status.
+        $('.player-log').html('You\'ve defeated ' + opponentName + '! You may choose to fight another opponent by clicking a red image from "Enemies to Attack."');
+
+        // Execute the following functions.
+        game.selectEnemyCharacter();
+        game.play();
+
+      } // end if(opponentHp <= 0 && $('.enemy').length !== 0) statement
+    } // end if(selectNewOpponent) statement
+
+      // Execute game.checkStatus() to determine if the player won.
+      game.checkStatus();
+    }); // end .attack click event
+  }, // end game.play()
+
+  // Restart the game.
+  restart: function() {
+    // Display the restart button.
+    $('.restart').css('display', 'block');
+    // When the restart button is clicked, restart the game.
+    $(document).one('click', '.restart', function() {
+      // Remove the restart button
+      $('.restart').css('display', 'none');
+      // Execute setUp()
+      game.setUp();
+      game.selectYourCharacter();
+      game.selectEnemyCharacter();
+      game.play();
+    }); // end .restart click event
+  } // end game.restart()
+
+}; // end game object
+
+
+// The .ready() method accepts a callback function and waits for the DOM to be fully loaded before that function is executed.
+// $(document).ready()
+$(document).ready(function() {
+  // Execute game.setUp()
+  game.setUp();
+  game.selectYourCharacter();
+  game.selectEnemyCharacter();
+  game.play();
+
+}); // end document.ready()
+
