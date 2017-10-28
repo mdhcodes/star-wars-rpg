@@ -376,4 +376,3 @@ $(document).ready(function() {
   game.play();
 
 }); // end document.ready()
-
