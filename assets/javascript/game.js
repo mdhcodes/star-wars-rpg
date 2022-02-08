@@ -1,7 +1,7 @@
 // Star Wars RPG
 
 // Global variables
-var message = '',
+let message = '',
     playerName = '',
     opponentName = '',
     playerIndex = '',
@@ -14,7 +14,7 @@ var message = '',
     selectNewOpponent = false;
 
 // Game Object
-var game = {
+const game = {
 
   characters: [
     // Create objects for each character with properties and values
@@ -77,25 +77,25 @@ var game = {
     $('main').append(message);
 
     // Create a <div> to display the game characters.
-    var gameCharactersDiv = $('<div>').attr('id', 'game-characters');
+    let gameCharactersDiv = $('<div>').attr('id', 'game-characters');
     // Loop over the game.characters object.
     for(character in game.characters) {
       // Create a <div> element with class="character" for each object in the characters array.
-      var characterDiv = $('<div>').attr({
+      let characterDiv = $('<div>').attr({
         'class': 'character',
         'data-index': character
       });
       // Create an <h2> element for each character's name.
-      var characterH2 = $('<h2>').html(game.characters[character].name);
+      let characterH2 = $('<h2>').html(game.characters[character].name);
       // Create an <img> element for each character's image with src, width, height, and alt attributes.
-      var characterImg = $('<img>').attr({
+      let characterImg = $('<img>').attr({
         'src': game.characters[character].image,
         'width': '128px',
         'height': '80px',
         'alt': game.characters[character].name
       });
       // Create a <p> element with class="health-points" to display each character's health points.
-      var characterP = $('<p>').addClass('health-points').html(game.characters[character]["Health Points"]);
+      let characterP = $('<p>').addClass('health-points').html(game.characters[character]["Health Points"]);
       // Append the characterH2, characterImg, and characterP elements to the characterDiv.
       characterDiv.append(characterH2);
       characterDiv.append(characterImg);
@@ -107,29 +107,29 @@ var game = {
     } // end for loop over game.characters object
 
     // Create a <div> for the player's character.
-    var playerDiv = $('<div>').attr('id', 'player');
+    let playerDiv = $('<div>').attr('id', 'player');
     // Create a heading for this <div>.
-    var playerH2 = $('<h2>').text('Your Character');
+    let playerH2 = $('<h2>').text('Your Character');
     // Append playerH2 to the playerDiv.
     playerDiv.append(playerH2);
     // Append the playerDiv to the <main> element.
     $('main').append(playerDiv);
 
     // Create a <div> for the player's enemies.
-    var enemiesDiv = $('<div>').attr('id', 'enemies');
+    let enemiesDiv = $('<div>').attr('id', 'enemies');
     // Create a heading for this <div>.
-    var enemiesH2 = $('<h2>').text('Enemies Available to Attack');
+    let enemiesH2 = $('<h2>').text('Enemies Available to Attack');
     // Append enemiesH2 to the enemiesDiv.
     enemiesDiv.append(enemiesH2);
     // Append the enemiesDiv to the <main> element.
     $('main').append(enemiesDiv);
 
     // Create a <div> for the fight.
-    var fightDiv = $('<div>').attr('id', 'fight');
+    let fightDiv = $('<div>').attr('id', 'fight');
     // Create a heading for this <div>.
-    var fightH2 = $('<h2>').text('Fight Section');
+    let fightH2 = $('<h2>').text('Fight Section');
     // Create a button for the attack / counter attack.
-    var fightBtn = $('<button>').attr('class', 'attack').text('Attack');
+    let fightBtn = $('<button>').attr('class', 'attack').text('Attack');
     // Append fightH2 to fightDiv.
     fightDiv.append(fightH2);
     // Append the fightBtn to the fightDiv.
@@ -138,20 +138,20 @@ var game = {
     $('main').append(fightDiv);
 
     // Create a <div> for the player's opponent.
-    var opponentDiv = $('<div>').attr('id', 'opponent');
+    let opponentDiv = $('<div>').attr('id', 'opponent');
     // Create a heading for this <div>.
-    var opponentH2 = $('<h2>').text('Your Opponent');
+    let opponentH2 = $('<h2>').text('Your Opponent');
     // Append opponentH2 to the opponentDiv.
     opponentDiv.append(opponentH2);
     // Append the opponentDiv to the <main> element.
     $('main').append(opponentDiv);
 
     // Create the game status <div> to track and log game data.
-    var gameStatusDiv = $('<div>').attr('id', 'game-status');
+    let gameStatusDiv = $('<div>').attr('id', 'game-status');
     // Create playerLog <h3> to track and log player attack power.
-    var playerLog = $('<h3>').attr('class', 'player-log');
+    let playerLog = $('<h3>').attr('class', 'player-log');
     // Create opponentLog <h3> to track and log opponent counter attack power.
-    var opponentLog = $('<h3>').attr('class', 'opponent-log');
+    let opponentLog = $('<h3>').attr('class', 'opponent-log');
     // Append the playerLog and opponentLog <h3> elements to the gameStatus <div>.
     gameStatusDiv.append(playerLog);
     gameStatusDiv.append(opponentLog);
@@ -159,7 +159,7 @@ var game = {
     $('main').append(gameStatusDiv);
 
     // Create the restart button.
-    var restartBtn = $('<button>').text('Restart').addClass('restart');
+    let restartBtn = $('<button>').text('Restart').addClass('restart');
     // Append the restart button to the <div> with id="game-status".
     $('#game-status').append(restartBtn);
     // Hide restart button
